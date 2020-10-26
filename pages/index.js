@@ -1,65 +1,126 @@
+import { connect } from 'react-redux';
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import styles from '../styles/Home.module.scss'
+import { useEffect, useState } from 'react'
+import { toast,ToastContainer } from 'react-nextjs-toast'
+import {Page_titles,Headings,subHeadings} from '../constants/constants.js'
 
-export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+const {
+    getSpacePrgrams, filterSpacePrograms } = require(`../redux/actions`);
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+function HomeScreen({ getSpacePrgrams, spaceProgramsList, filterSpacePrograms }) {
+    let intialFilter = { launch_year: '', launch_success: '', land_success: '' }
+    const [spaceProgramsResults, setSpaceProgramsResults] = useState([])
+    const [filterValues, setFilterValues] = useState(intialFilter)
+    const filterOptions = ['2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020']
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+    useEffect(() => {
+        getSpacePrgrams({ limit: 100 }, (msg) => {
+            toast.notify(msg,{type: "error"})
+        })
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+    }, [])
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+    useEffect(() => {
+        setSpaceProgramsResults(spaceProgramsList)
+    }, [spaceProgramsList])
+    useEffect(() => {
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+    }, [spaceProgramsResults])
 
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+    const applyFilters = (filter, value) => {
+        if (filter == 'reset') {
+            setFilterValues(intialFilter)
+        }
+        else setFilterValues({ ...filterValues, [filter]: value })
+    }
+    useEffect(() => {
+        filterSpacePrograms(filterValues, (msg) => {
+            toast.notify(msg,{type: "error"})
+        })
+    }, [filterValues])
+
+    return (
+        <div className={styles.container}>
+            <Head>
+                <title>{Page_titles.SpaceProgram}</title></Head>
+                <ToastContainer position={"bottom"} align={"center"} />
+            <div className={styles.mainScreen}>
+                <h3>{Page_titles.SpaceProgram}</h3>
+                <main className={styles.main}>
+
+                    <div className={styles.filter}>
+                        <h6>{Headings.filters}</h6>
+                        <p>{Headings.launchYear}</p>
+                        <hr />
+                        <div className={styles.filterOptions}>
+                            {filterOptions.map((filter, index) => {
+                                return <div key={index}><button className={filter === filterValues.launch_year ? 'active' : ''} onClick={() => applyFilters('launch_year', filter)}>{filter}</button></div>
+                            })}
+                        </div>
+
+                        <p>{Headings.successfulLaunch}</p>
+                        <hr />
+                        <div className={styles.filterOptions}>
+                            <div><button className={filterValues.launch_success ? 'active' : ''} onClick={() => applyFilters('launch_success', true)}>True</button></div>
+                            <div><button className={!filterValues.launch_success ? 'active' : ''} onClick={() => applyFilters('launch_success', false)}>False</button></div>
+                        </div>
+                        <p>{Headings.successfulLanding}</p>
+                        <hr />
+                        <div className={styles.filterOptions}>
+                            <div><button className={filterValues.land_success ? 'active' : ''} onClick={() => applyFilters('land_success', true)}>True</button></div>
+                            <div> <button className={!filterValues.land_success ? 'active' : ''} onClick={() => applyFilters('land_success', false)}>False</button></div>
+                        </div>
+                        <p>{subHeadings.reset} </p>
+                        <hr />
+                        <div className={styles.resetFilter}>
+                            <div> <button onClick={() => applyFilters('reset')}>{subHeadings.resetFilters}</button></div>
+                        </div>
+                    </div>
+                    <div className={styles.grid}>
+
+                        {spaceProgramsResults.length > 0 && spaceProgramsResults.map((program, index1) => {
+
+                            return <div className={styles.gridItem} key={index1}>
+                                <div className={styles.gridItemImg}>
+                                    <img src={program.links.mission_patch} />
+                                    <h6 className={styles.missionHeading}>{`${program.mission_name} #${program.flight_number}`}</h6>
+                                    <h6 className={styles.missionInfo}>{Headings.missionIds}
+                                <ul>
+                                            {program.mission_id.map((id, index) => {
+                                                return <li key={index}>{id}</li>
+                                            })}
+                                        </ul>
+                                    </h6>
+                                    <h6 className={styles.missionInfo}>{Headings.launchYear}: {program.launch_year}</h6>
+                                    <h6 className={styles.missionInfo}>{Headings.successfulLaunch}: {program.launch_success ? 'true' : 'false'}</h6>
+                                    <h6 className={styles.missionInfo}>{Headings.successfulLanding}: </h6>{program.launch_success}
+                                </div>
+                            </div>
+
+                        })
+                        }
+                    </div>
+                </main>
+
+                <footer className={styles.footer}>
+                    Developed by:  {'Avneet Kaur'}
+                </footer>
+            </div>
         </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+    )
 }
+
+const mapStateToProps = (state) => {
+    return ({
+        spaceProgramsList: state.SpacePrograms.spaceProgramsList
+    });
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getSpacePrgrams: (data, failure) => dispatch(getSpacePrgrams(data, failure)),
+        filterSpacePrograms: (data, failure) => dispatch(filterSpacePrograms(data, failure))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
