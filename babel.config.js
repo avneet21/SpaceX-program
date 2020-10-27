@@ -12,5 +12,6 @@ module.exports  = {
           "next/babel"
         ]
       }
-    }
+    },
+    "plugins" : ["@babel/plugin-transform-react-jsx"]
   }
