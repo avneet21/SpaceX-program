@@ -46,18 +46,18 @@
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-.filterOptions button {
-  margin-bottom: 10px;
-  background-color: $filter-button-color;
-  border: none;
-  padding: 1px;
-  width: 55%;
-  height: 33px
+.filterOptions {
+  button {
+    margin-bottom: 10px;
+    background-color: $filter-button-color;
+    border: none;
+    padding: 1px;
+    width: 55%;
+    height: 33px;  
+  }
 }
 
-.active {
-  background-color: $applied-filter-button-color;
-}
+
 
 .resetFilter button {
   margin-bottom: 10px;

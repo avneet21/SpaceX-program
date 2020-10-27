@@ -7,7 +7,6 @@ import {
 import { takeLatest, all, put } from "redux-saga/effects";
 
 function* fetchSpaceProgram(data) {
-    console.log(data,'in saga')
     try {
         let results = yield fetch('https://api.spaceXdata.com/v3/launches?limit=100')
         results = yield results.json()
@@ -35,11 +34,11 @@ function* filteredSpaceProgram(data) {
         }
     }
     ).join('&');
-    console.log(postData,'postData')
+
     try {
         let results = yield fetch(`https://api.spaceXdata.com/v3/launches?limit=100&${postData}`)
         results = yield results.json()
-   console.log(results,'results')
+
         if(results){
             yield put(saveSpacePrograms(results))
         }

@@ -48,28 +48,27 @@ function HomeScreen({ getSpacePrgrams, spaceProgramsList, filterSpacePrograms })
             <div className={styles.mainScreen}>
                 <h3>{Page_titles.SpaceProgram}</h3>
                 <main className={styles.main}>
-
                     <div className={styles.filter}>
                         <h6>{Headings.filters}</h6>
                         <p>{Headings.launchYear}</p>
                         <hr />
                         <div className={styles.filterOptions}>
                             {filterOptions.map((filter, index) => {
-                                return <div key={index}><button className={filter === filterValues.launch_year ? 'active' : ''} onClick={() => applyFilters('launch_year', filter)}>{filter}</button></div>
+                                return <div key={index} className="filter_btn"><button className={filter === filterValues.launch_year ? 'active' : ''} onClick={() => applyFilters('launch_year', filter)}>{filter}</button></div>
                             })}
                         </div>
 
                         <p>{Headings.successfulLaunch}</p>
                         <hr />
                         <div className={styles.filterOptions}>
-                            <div><button className={filterValues.launch_success ? 'active' : ''} onClick={() => applyFilters('launch_success', true)}>True</button></div>
-                            <div><button className={!filterValues.launch_success ? 'active' : ''} onClick={() => applyFilters('launch_success', false)}>False</button></div>
+                            <div className="filter_btn"><button className={filterValues.launch_success === true ? 'active' : ''} onClick={() => applyFilters('launch_success', true)}>True</button></div>
+                            <div className="filter_btn"><button className={filterValues.launch_success === false ? 'active' : ''} onClick={() => applyFilters('launch_success', false)}>False</button></div>
                         </div>
                         <p>{Headings.successfulLanding}</p>
                         <hr />
                         <div className={styles.filterOptions}>
-                            <div><button className={filterValues.land_success ? 'active' : ''} onClick={() => applyFilters('land_success', true)}>True</button></div>
-                            <div> <button className={!filterValues.land_success ? 'active' : ''} onClick={() => applyFilters('land_success', false)}>False</button></div>
+                            <div className="filter_btn"><button className={filterValues.land_success === true  ? 'active' : ''} onClick={() => applyFilters('land_success', true)}>True</button></div>
+                            <div className="filter_btn"> <button className={filterValues.land_success === false ? 'active' : ''} onClick={() => applyFilters('land_success', false)}>False</button></div>
                         </div>
                         <p>{subHeadings.reset} </p>
                         <hr />
@@ -103,9 +102,9 @@ function HomeScreen({ getSpacePrgrams, spaceProgramsList, filterSpacePrograms })
                     </div>
                 </main>
 
-                <footer className={styles.footer}>
+                {/* <footer className={styles.footer}>
                     Developed by:  {'Avneet Kaur'}
-                </footer>
+                </footer> */}
             </div>
         </div>
     )
